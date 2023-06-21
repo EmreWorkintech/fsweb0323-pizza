@@ -61,40 +61,32 @@ async function getOrdersByUser(){
     const result = rawData.reduce((acc,item)=>{
         const registeredUser = acc.find(user=>user.UserId === item.UserId);
 
-        if(!registeredUser){
+        const newUser = {
+            Birth_Year: item.Birth_Year,
+            Email: item.Email,
+            School: item.School,
+            Name: item.Name,
+            Surname: item.Surname,
+            UserId: item.UserId,
+            Orders: []
+        }
 
-            if(!item.OrderId){//1. yeni user ve order yok => user ve order'ı [] olarak ekleyeceğim.
-                const newUser = {
-                    Birth_Year: item.Birth_Year,
-                    Email: item.Email,
-                    School: item.School,
-                    Name: item.Name,
-                    Surname: item.Surname,
-                    UserId: item.UserId,
-                    Orders: []
-                }
+        const newOrder = {
+            OrderId: item.OrderId,
+            Total_Price: item.Total_Price
+        }
 
-                acc.push(newUser);
-                return acc;
 
-            }else { //2. yeni user ve order var => user ve order'ı ekleyeceğim
-                const newUser = {
-                    Birth_Year: item.Birth_Year,
-                    Email: item.Email,
-                    School: item.School,
-                    Name: item.Name,
-                    Surname: item.Surname,
-                    UserId: item.UserId,
-                    Orders: [{
-                        OrderId: item.OrderId,
-                        Total_Price: item.Total_Price
-                    }]
-                }
-
-                acc.push(newUser);
-                return acc;
-            }
+        if(!registeredUser){//1. yeni user ve order yok => user ve order'ı [] olarak ekleyeceğim.
             
+            if(item.OrderId){
+                //2. yeni user ve order var => user ve order'ı ekleyeceğim
+                newUser.Orders.push(newOrder);
+
+            }
+
+            acc.push(newUser);
+
         } else {
       
                 // 3. eski user ama yeni order'ı var => order'ı eski user'a ekleyeceğim.
@@ -102,14 +94,11 @@ async function getOrdersByUser(){
             //registeredUser
             //regiteredUser.Orders
 
-            const newOrder = {
-                OrderId: item.OrderId,
-                Total_Price: item.Total_Price
-            }
-
             registeredUser.Orders.push(newOrder);
-            return acc;
+            
         }
+
+        return acc;
         
     },[])
     
