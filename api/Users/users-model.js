@@ -61,16 +61,6 @@ async function getOrdersByUser(){
     const result = rawData.reduce((acc,item)=>{
         const registeredUser = acc.find(user=>user.UserId === item.UserId);
 
-        const newUser = {
-            Birth_Year: item.Birth_Year,
-            Email: item.Email,
-            School: item.School,
-            Name: item.Name,
-            Surname: item.Surname,
-            UserId: item.UserId,
-            Orders: []
-        }
-
         const newOrder = {
             OrderId: item.OrderId,
             Total_Price: item.Total_Price
@@ -79,6 +69,16 @@ async function getOrdersByUser(){
 
         if(!registeredUser){//1. yeni user ve order yok => user ve order'ı [] olarak ekleyeceğim.
             
+            const newUser = {
+                Birth_Year: item.Birth_Year,
+                Email: item.Email,
+                School: item.School,
+                Name: item.Name,
+                Surname: item.Surname,
+                UserId: item.UserId,
+                Orders: []
+            }
+
             if(item.OrderId){
                 //2. yeni user ve order var => user ve order'ı ekleyeceğim
                 newUser.Orders.push(newOrder);
