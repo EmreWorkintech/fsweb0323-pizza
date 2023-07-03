@@ -1,11 +1,15 @@
 const db = require('../../data/db-config');
 
 function getAll() {
-    return []
+    return db('Users');
 }
 
 function getById(id) {
-    return []
+    return db('Users').where('id', id).first();
+}
+
+function getByFilter(filter) {
+    return db('Users').where(filter);
 }
 
 async function getOrdersByUser(){
@@ -107,8 +111,17 @@ async function getOrdersByUser(){
 
 }
 
+async function create(payload) {
+    const [id] = await db('Users').insert(payload);
+    const user = await getById(id);
+    return user
+}
+
+
 module.exports = {
     getAll,
     getById,
-    getOrdersByUser
+    getOrdersByUser,
+    create,
+    getByFilter,
 }

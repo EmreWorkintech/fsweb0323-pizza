@@ -1,0 +1,28 @@
+{
+    "__meta__": {
+        "about": "HTTPie session file",
+        "help": "https://httpie.io/docs#sessions",
+        "httpie": "3.2.2"
+    },
+    "auth": {
+        "password": null,
+        "type": null,
+        "username": null
+    },
+    "cookies": [
+        {
+            "domain": "localhost.local",
+            "expires": 1688384476,
+            "name": "PizzaOrder",
+            "path": "/",
+            "secure": false,
+            "value": "s%3AnObT5_xUPM4RZf5X_DEdksDaZkLNrYMv.%2FCPoDyUi4rEvNiw%2FfLOZLYJt2INgn%2BHb6yaRqWyAiLM"
+        }
+    ],
+    "headers": [
+        {
+            "name": "Accept",
+            "value": "application/json, */*;q=0.5"
+        }
+    ]
+}
