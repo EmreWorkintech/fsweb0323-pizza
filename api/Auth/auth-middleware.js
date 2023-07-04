@@ -2,6 +2,16 @@ const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = require('../../config');
 
 function isTokenCached(req,res,next){
+    const isCached = true; ;//cache controlü eklenecek.
+    if(isCached){
+        next()
+    } else {
+        next({status: 401, message: 'Geçersiz giriş!...'})
+    }
+}
+
+function protected(req,res,next){
+    
     const token = req.headers.authorization;
     if(token){
         jwt.verify(token,JWT_SECRET, (err,decodedJWT)=>{
@@ -16,20 +26,7 @@ function isTokenCached(req,res,next){
     } else {
         next({status: 401, message: 'Token yok!...'})
     }
-}
-
-function protected(req,res,next){
-    const isCached = true; ;//cache controlü eklenecek.
-    if(isCached){
-        next()
-    } else {
-        next({status: 401, message: 'Geçersiz giriş!...'})
-    }
-    /*if(req.session && req.session.user) {
-        next()
-    } else {
-        next({status: 401, message: 'Önce login olunuz!...'})
-    }*/
+    
 }
 
 function onlyAdmins(req,res,next){
