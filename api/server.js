@@ -1,18 +1,18 @@
 //1. import
 const express = require('express');
 const server = express();
-const session = require('express-session');
-const KnexSessionStore = require('connect-session-knex')(session);
+//const session = require('express-session');
+//const KnexSessionStore = require('connect-session-knex')(session);
 
 const usersRouter = require('./Users/users-router');
 const authRouter = require('./Auth/auth-router');
 
-const { protected } = require('./Auth/auth-middleware');
+const { protected, isTokenCached } = require('./Auth/auth-middleware');
 
  
 //2. middleware
 server.use(express.json());
-server.use(
+/*server.use(
     session(
         {
             name: "PizzaOrder",  //connect.sid
@@ -33,14 +33,19 @@ server.use(
             })
         }
     ))
-
+*/
 //3. router
 server.get('/', (req,res)=>{
     res.json({message: "Server up and running..."})
 })
-server.use('/api/users', protected, usersRouter)
+server.use('/api/users', isTokenCached, protected, usersRouter)
 server.use('/api/auth', authRouter)
 //4. error middleware
+
+server.use((err,req,res,next)=>{
+    res.status(err.status || 500)
+        .json({message: err.message || "Server error!..."})
+})
 
 //export
 module.exports = server;

@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const {JWT_SECRET} = require('../../config');
 
 const User = require('../Users/users-model');
 
@@ -20,8 +22,9 @@ router.post('/login', async (req,res,next)=>{
     const user = await User.getByFilter({Email: Email}).first();
     //adım 2: password'unu check ederiz.
     if(user && bcrypt.compareSync(Password, user.Password)){
-        req.session.user = user;  //Session oluşturduk.
-        res.json({message: `Merhaba ${user.Name}, tekrar hoş geldin...`})
+        //req.session.user = user;  //Session oluşturduk.
+        const token = generateToken(user);
+        res.json({message: `Merhaba ${user.Name}, tekrar hoş geldin...`, token})
     } else {
         res.status(401).json({message: `Giriş bilgileri yanlış...`})
     }
@@ -33,7 +36,7 @@ router.post('/password/reset', async (req,res,next)=>{
 })
 
 router.get('/logout', async (req,res,next)=>{
-    if(req.session && req.session.user){
+    /*if(req.session && req.session.user){
         const { Name } = req.session.user;
         req.session.destroy(err=>{  //server tarafında session'ı destroy eder.
             if(err){
@@ -46,8 +49,20 @@ router.get('/logout', async (req,res,next)=>{
 
     } else {
         res.status(400).json({message: "Zaten session'ın yok. Hiç login olmamış olabilir misin :)"})
-    }
-    
+    }*/
 })
+
+function generateToken(user){
+    const payload = {
+        id: user.id,
+        Name: user.Name,
+        Role: user.RoleName
+    }
+    const options = {
+        expiresIn: "3h"
+    }
+    const token = jwt.sign(payload, JWT_SECRET, options);
+    return token;
+}
 
 module.exports = router;
